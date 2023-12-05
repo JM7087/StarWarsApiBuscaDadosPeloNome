@@ -1,23 +1,28 @@
 <?php
 
+// Verifica se o formulário foi submetido
 if (isset($_POST['urlNome'])) {
-
+    
+    // Obtém o valor do campo 'urlNome' do formulário
     $urlNome = $_POST['urlNome'];
 
+    // Substitui espaços por %20 para formar a URL adequada para a API
     $urlNomeSemEspaco = str_replace(' ', '%20', $urlNome);
 } else {
-
+    // Se o campo 'urlNome' estiver vazio, atribui uma string vazia
     $urlNomeSemEspaco = "";
 }
 
-
+// Faz uma requisição à API SWAPI para obter dados dos personagens com base no nome fornecido
 $jsonWrl = file_get_contents("https://swapi.dev/api/people/?search=" . $urlNomeSemEspaco . "&format=json");
 
-
+// Decodifica o JSON recebido da API para um objeto PHP
 $jsonData = json_decode($jsonWrl);
 
+// Extrai a lista de resultados dos personagens da resposta JSON
 $results = $jsonData->results;
 
+// Inicializa variáveis para armazenar os dados do personagem
 $nome = '';
 $altura = '';
 $peso = '';
@@ -27,12 +32,15 @@ $corDosOlhos = '';
 $anoDeNascimento = '';
 $sexo = '';
 
+// Verifica se o campo 'urlNome' não está vazio
 if ($urlNomeSemEspaco != "") {
 
+    // Percorre os resultados obtidos da API (neste caso, apenas o primeiro resultado)
     foreach ($results as $dados) {
-        $dados;
+        $dados; // Nenhuma operação específica é realizada aqui
     }
 
+    // Extrai os dados do primeiro personagem encontrado na API
     $nome = $dados->name;
     $altura = $dados->height;
     $peso = $dados->mass;
@@ -42,6 +50,7 @@ if ($urlNomeSemEspaco != "") {
     $anoDeNascimento = $dados->birth_year;
     $sexo = $dados->gender;
 
+    // Prepara uma string formatada para exibir os dados do personagem
     $mostrarDados = "
     
     <h2>Nome: $nome</h2>
@@ -50,24 +59,22 @@ if ($urlNomeSemEspaco != "") {
     <h2>Cor do Cabelo: $corDoCabelo</h2>
     <h2>Cor da Pele: $corDaPele</h2>
     <h2>Cor dos Olhos: $corDosOlhos</h2>
-    <h2>Ano do Nacimento: $anoDeNascimento</h2>
+    <h2>Ano do Nascimento: $anoDeNascimento</h2>
     <h2>Sexo: $sexo</h2>
     
     ";
 } else {
+    // Caso o campo 'urlNome' esteja vazio, define $dados como 0 e a string a ser mostrada como vazia
     $dados = 0;
-
     $mostrarDados = '';
 }
-
-
 ?>
 
 <html>
 
 <head>
-
     <title>Personagens de Star Wars</title>
+</head>
 
 <body style="background-color: A4A4A4">
 
@@ -85,9 +92,6 @@ if ($urlNomeSemEspaco != "") {
 
     <?php echo $mostrarDados ?>
 
-
 </body>
-
-</head>
 
 </html>
